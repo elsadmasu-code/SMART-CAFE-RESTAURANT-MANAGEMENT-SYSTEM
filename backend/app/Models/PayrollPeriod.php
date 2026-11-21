@@ -1,0 +1,29 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class PayrollPeriod extends Model
+{
+    protected $fillable = [
+        'branch_id',
+        'period_name',
+        'start_date',
+        'end_date',
+        'status',
+        'processed_by_user_id',
+        'processed_at',
+    ];
+
+    protected $casts = [
+        'start_date' => 'date',
+        'end_date' => 'date',
+        'processed_at' => 'datetime',
+    ];
+
+    public function items()
+    {
+        return $this->hasMany(PayrollItem::class);
+    }
+}

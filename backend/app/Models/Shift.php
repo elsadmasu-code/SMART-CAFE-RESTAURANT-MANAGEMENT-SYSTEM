@@ -1,0 +1,25 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Shift extends Model
+{
+    protected $fillable = [
+        'branch_id',
+        'shift_name',
+        'start_time',
+        'end_time',
+        'grace_period_minutes',
+    ];
+
+    protected $casts = [
+        'grace_period_minutes' => 'integer',
+    ];
+
+    public function attendances()
+    {
+        return $this->hasMany(Attendance::class);
+    }
+}

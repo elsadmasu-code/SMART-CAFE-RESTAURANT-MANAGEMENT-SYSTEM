@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+  # MySQL 8.0 Primary Relational Database
+  mysql:
+    image: mysql:8.0
+    container_name: scrms_mysql
+    restart: always
+    environment:
+      MYSQL_DATABASE: scrms_fkr_cafe
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_PASSWORD: scrmspassword
+      MYSQL_USER: scrms_user
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - scrms_network
+
+  # Laravel 11 REST API Backend (PHP 8.4)
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: scrms_backend
+    restart: always
+    ports:
+      - "8000:8000"
+    environment:
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_DATABASE: scrms_fkr_cafe
+      DB_USERNAME: scrms_user
+      DB_PASSWORD: scrmspassword
+    depends_on:
+      - mysql
+    networks:
+      - scrms_network
+
+  # Vue 3 Frontend Single Page Application
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: scrms_frontend
+    restart: always
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    networks:
+      - scrms_network
+
+volumes:
+  mysql_data:
+
+networks:
+  scrms_network:
+    driver: bridge
